@@ -1,0 +1,25 @@
+# Get an ADMIN access token for the API
+# ADMIN level access is not required for many models/fields,
+# but it is required for some (i.e. user emails and roles).
+# Using the response.accessToken, you can authorize to the
+# API by adding HTTP header `Authorization: "Bearer <accessToken>"`
+query GetToken {
+    token(email:"admin@example.com", password:"password") {
+        accessToken
+        userId
+        roles
+    }
+}
+
+query Posts {
+    posts(first:10) {
+        id
+        author {
+            id
+            name
+            email
+            roles
+        }
+    }
+}
+
