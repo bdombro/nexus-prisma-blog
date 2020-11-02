@@ -7,13 +7,11 @@ docker run --detach --publish 5432:5432 -e POSTGRES_PASSWORD=postgres --name 'ne
 ```
 
 ```
-yarn migrate
-yarn generate
-yarn seed
+yarn && yarn migrate && yarn generate && yarn seed
 ```
 
 ```
-yarn && yarn dev
+yarn generate && yarn dev
 ```
 
 Then try one of the queries in `examples.graphql`!

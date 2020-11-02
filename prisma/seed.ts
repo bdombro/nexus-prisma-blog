@@ -1,11 +1,15 @@
 import { PrismaClient, PostStatus } from '@prisma/client'
+import argon from 'argon2';
 
-main()
+const prisma = new PrismaClient()
+
+main().finally(prisma.$disconnect)
 
 async function main() {
-  const prisma = new PrismaClient()
-
-  let postWithAuthor;
+  let
+    postWithAuthor,
+    testPassword = 'password',
+    testHash = await argon.hash(testPassword)
 
   postWithAuthor = await prisma.user.create({
     data: {
@@ -13,7 +17,7 @@ async function main() {
           rating: 0.5,
           email: 'admin@example.com',
           roles: ['ADMIN'],
-          password: '$2b$10$UAwotKUBOp8A4y5tmGIxuOpdm5fTfpSVjb2ULmEN3BYz1OkkvtVnq', // 'password' with 10 rounds bcrypt,
+          password: testHash,
           posts: {
             create: [
               {
@@ -32,7 +36,7 @@ async function main() {
       rating: 0.5,
       email: 'editor@example.com',
       roles: ['EDITOR'],
-      password: '$2b$10$UAwotKUBOp8A4y5tmGIxuOpdm5fTfpSVjb2ULmEN3BYz1OkkvtVnq', // 'password' with 10 rounds bcrypt,
+      password: testHash,
       posts: {
         create: [
           {
@@ -51,7 +55,7 @@ async function main() {
       rating: 0.5,
       email: 'author@example.com',
       roles: ['AUTHOR'],
-      password: '$2b$10$UAwotKUBOp8A4y5tmGIxuOpdm5fTfpSVjb2ULmEN3BYz1OkkvtVnq', // 'password' with 10 rounds bcrypt,
+      password: testHash,
       posts: {
         create: [
           {
@@ -63,6 +67,4 @@ async function main() {
     },
   })
   console.log('added post with author:\n', postWithAuthor)
-
-  await prisma.disconnect()
 }

@@ -1,5 +1,5 @@
 import { intArg, queryType, stringArg } from '@nexus/schema'
-import bcrypt from 'bcrypt';
+import argon from 'argon2';
 import jwt from 'jsonwebtoken';
 
 export const Query = queryType({
@@ -14,26 +14,24 @@ export const Query = queryType({
         email: stringArg({ required: true }),
         password: stringArg({ required: true }),
       },
-      resolve(_root, args, ctx) {
-        return ctx.prisma.user
+      resolve: async (_root, args, ctx) => {
+        const user = await ctx.prisma.user
           .findOne({
             where: {
               email: args.email,
             },
           })
-          .then((result) => {
-            if (result === null) {
-              throw new Error(`Username or Password is invalid`)
-            }
-            if (!bcrypt.compareSync(args.password, result.password)) {
-              throw new Error(`Username or Password is invalid`)
-            }
-            return {
-              accessToken: jwt.sign({ id: result.id, roles: result.roles }, "supersecret", { expiresIn: '1d' }),
-              userId: result.id,
-              roles: result.roles,
-            }
-          })
+        if (user === null) {
+          throw new Error(`Username or Password is invalid`)
+        }
+        if (!await argon.verify(user.password, args.password)) {
+          throw new Error(`Username or Password is invalid`)
+        }
+        return {
+          accessToken: jwt.sign({ id: user.id, roles: user.roles }, "supersecret", { expiresIn: '1d' }),
+          userId: user.id,
+          roles: user.roles,
+        }
       },
     })
   },
