@@ -1,0 +1,15 @@
+.loadSkeleton {
+    animation: pulse 1.2s ease-in-out infinite;
+}
+.loadSkeleton::before {
+    content: "\00a0";
+}
+
+@keyframes pulse {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: -135% 0%;
+    }
+}

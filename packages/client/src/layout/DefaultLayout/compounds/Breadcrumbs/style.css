@@ -1,0 +1,21 @@
+.breadcrumbs {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background: #ddd
+}
+.breadcrumbs ul {
+    padding: 0;
+    display: inline;
+}
+.breadcrumbs li {
+    display: inline;
+}
+.breadcrumbs li:not(:last-of-type):after {
+    content: " > ";
+}
+.breadcrumbs li a {
+    color: blue;
+}
+.breadcrumbs li a.active {
+    text-decoration: underline;
+}

@@ -1,47 +1,17 @@
 {
-  "name": "example",
+  "name": "nexus-prisma-react-blog",
   "private": true,
   "version": "0.0.0",
-  "main": "dist/main.ts",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "clean": "rm -rf dist",
-    "build": "yarn -s clean && yarn -s generate && tsc",
-    "style": "prettier --write 'src/**/*'",
-    "dev": "yarn generate && ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
-    "migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c",
-    "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
-    "generate:prisma": "prisma generate",
-    "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
-    "seed": "yarn ts-node prisma/seed.ts",
-    "data:inject": "ts-node prisma/fake-data.ts"
+    "build": "yarn workspaces run build",
+    "dev:client": "cd packages/client && yarn dev",
+    "dev:server": "cd packages/server && yarn dev",
+    "dev": "npx concurrently \"npm:dev:client\" \"npm:dev:server\"",
+    "start": "yarn workspaces run start"
   },
-  "dependencies": {
-    "@nexus/schema": "^0.16.0",
-    "@prisma/client": "2.9",
-    "apollo-server-errors": "^2.4.2",
-    "argon2": "^0.27.0",
-    "express-jwt": "^6.0.0",
-    "graphql": "^15.3.0",
-    "graphql-yoga": "^1.18.2",
-    "nexus-plugin-prisma": "^0.21.0",
-    "rambdax": "^7.0.1"
-  },
-  "devDependencies": {
-    "@prisma/cli": "2.9",
-    "@types/bcrypt": "^3.0.0",
-    "@types/express-jwt": "^0.0.42",
-    "@types/faker": "^5.1.2",
-    "@types/jsonwebtoken": "^8.5.0",
-    "@types/ws": "^7.2.7",
-    "faker": "^5.1.0",
-    "prettier": "^2.1.2",
-    "ts-node": "^9.0.0",
-    "ts-node-dev": "^1.0.0-pre.65",
-    "typescript": "^4.0.3"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

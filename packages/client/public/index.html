@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- %PUBLIC_URL% is replaced with the URL of the public folder -->
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div style="display:flex; justifyContent:center; alignItems:center; height:100vh">
+        <div style="margin:auto">
+          <img style="margin:auto" src="/tail-spin.svg" />
+          <div>&nbsp;</div>
+        </div>
+      </div>
+    </div>
+    <div id="outdated"></div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/outdated-browser-rework/2.10.0/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/outdated-browser-rework/2.10.0/outdated-browser-rework.min.js"></script>
+    <script>
+      outdatedBrowserRework({
+        browserSupport: {
+          Chrome: 80, // > Feb 2020
+          Edge: 79, // > Feb 2020
+          Safari: 13, // > 2019
+          "Mobile Safari": 10,
+          Firefox: 73, // > 2019
+          Opera: 66, // > 2019
+          Vivaldi: 3, // > April 2020
+          Yandex: 20, // > 2019
+          IE: false
+        },
+        requireChromeOnAndroid: true,
+        isUnknownBrowserOK: false,
+      });
+    </script>
+  </body>
+</html>

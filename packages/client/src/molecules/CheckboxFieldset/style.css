@@ -1,0 +1,13 @@
+.checkboxField {
+    display: block;
+}
+.checkboxField.hasError input {
+    border: 1px solid red;
+}
+.checkboxField .error {
+    display: none;
+    color: red;
+}
+.checkboxField.hasError .error {
+    display: block;
+}

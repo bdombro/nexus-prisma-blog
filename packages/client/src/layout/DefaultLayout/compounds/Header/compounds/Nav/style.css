@@ -1,0 +1,18 @@
+.headerNav {
+}
+.headerNav ul {
+    padding: 0;
+    margin: 0;
+}
+.headerNav li {
+    display: inline;
+}
+.headerNav li:not(:last-of-type):after {
+    content: " | ";
+}
+.headerNav li a {
+    color: blue;
+}
+.headerNav li a.active {
+    text-decoration: underline;
+}
