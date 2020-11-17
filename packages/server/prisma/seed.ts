@@ -1,22 +1,20 @@
-import { PrismaClient, PostStatus } from '@prisma/client'
-import argon from 'argon2';
+import { PrismaClient, PostStatus, UserRole } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 main().finally(prisma.$disconnect)
 
+const passwordHash = '9b39911c178b3f399b5a8b4b2a57aee3f7c92de94ebadee6413e79ff977684dacb2542c1ebd631f824987bf7ae0ccf1212e0aa013b60b0efdbf5fff9737ff89c' // CoolPassword9
+
 async function main() {
-  let
-    postWithAuthor,
-    testPassword = 'password',
-    testHash = await argon.hash(testPassword)
+  let postWithAuthor;
 
   postWithAuthor = await prisma.user.create({
     data: {
           name: 'Nancy',
           email: 'admin@example.com',
-          roles: ['ADMIN'],
-          password: testHash,
+          roles: [UserRole.ADMIN],
+          password: passwordHash,
           posts: {
             create: [
               {
@@ -33,8 +31,8 @@ async function main() {
     data: {
       name: 'Drew',
       email: 'editor@example.com',
-      roles: ['EDITOR'],
-      password: testHash,
+      roles: [UserRole.EDITOR],
+      password: passwordHash,
       posts: {
         create: [
           {
@@ -51,8 +49,8 @@ async function main() {
     data: {
       name: 'Pappy',
       email: 'author@example.com',
-      roles: ['AUTHOR'],
-      password: testHash,
+      roles: [UserRole.AUTHOR],
+      password: passwordHash,
       posts: {
         create: [
           {

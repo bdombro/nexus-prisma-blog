@@ -1,6 +1,7 @@
-import { objectType } from '@nexus/schema'
+import { objectType } from "@nexus/schema";
 import { UserRole } from '@prisma/client'
 import auth from '../auth'
+
 
 export const User = objectType({
   name: 'User',
@@ -11,11 +12,19 @@ export const User = objectType({
 
     t.model.name()
     t.model.posts({ filtering: true, ordering: true, pagination: true })
-    t.string("email", {
+
+    t.model.roles()
+    // Below sadly doesn't expose the enum, so skipping security for now
+    // t.list.string("roles", {
+    //   resolve: auth.resolveFieldIfOwner("roles", []),
+    // })
+
+    t.email("email", {
       resolve: auth.resolveFieldIfOwner("email", [UserRole.EDITOR]),
     })
-    t.list.string("roles", {
-      resolve: auth.resolveFieldIfOwner("roles", []),
+
+    t.password("password", {
+      resolve: auth.never('password'),
     })
   },
 })

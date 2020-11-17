@@ -12,9 +12,9 @@ export const defaultValue: ContextType["state"] = Object.freeze({
 
 export const AuthenticationContext = React.createContext<ContextType>({
   state: defaultValue,
-  login: async () => ({ errors: [{ message: "Not initialized" }] as any }),
+  login: async () => ({ graphQLErrors: [{ message: "Not initialized" }] as any }),
   logout: async () => {},
-  register: async () => ({ errors: [{ message: "Not initialized" }] as any }),
+  register: async () => ({ graphQLErrors: [{ message: "Not initialized" }] as any }),
 });
 
 export const AuthenticationProvider: React.FC = ({ children }) => {
@@ -23,10 +23,12 @@ export const AuthenticationProvider: React.FC = ({ children }) => {
 
   const login: ContextType["login"] = React.useCallback(
     async (creds) => {
-      const res = await apolloClient.query({ query: TOKEN, variables: creds });
-      if (!res.errors) {
-        setState(res.data.token);
-      }
+      const res = await apolloClient.query({ query: TOKEN, variables: creds })
+        .then(res => {
+          setState(res.data.token);
+          return res
+        })
+        .catch(e => e)
       return res;
     },
     [apolloClient, setState]
@@ -38,11 +40,13 @@ export const AuthenticationProvider: React.FC = ({ children }) => {
 
   const register: ContextType["register"] = React.useCallback(
     async (creds) => {
-      const regRes = await apolloClient.query({ query: CREATE_USER, variables: creds });
-      if (regRes.error) {
-        return regRes;
-      }
-      return login({ email: creds.email, password: creds.password! });
+      const res = await apolloClient.mutate({ mutation: REGISTER, variables: { data: creds } })
+        .then(res => {
+          setState(res.data.token);
+          return login({ email: creds.email, password: creds.password! })
+        })
+        .catch(e => e)
+      return res;
     },
     [apolloClient, login]
   );
@@ -77,9 +81,9 @@ const TOKEN = gql`
   }
 `;
 
-const CREATE_USER = gql`
-  mutation CreateUser($input: UserCreateInput!) {
-    createOneUser(input: $input) {
+const REGISTER = gql`
+  mutation Register($data: RegisterInputType!) {
+    register(data: $data) {
       id
     }
   }

@@ -1,6 +1,5 @@
 import { intArg, queryType, stringArg } from '@nexus/schema'
-import argon from 'argon2';
-import jwt from 'jsonwebtoken';
+import * as crypto from "../lib/crypto";
 
 export const Query = queryType({
   definition(t) {
@@ -30,11 +29,11 @@ export const Query = queryType({
         if (user === null) {
           throw new Error(`Username or Password is invalid`)
         }
-        if (!await argon.verify(user.password, args.password)) {
+        if (!await crypto.verify(args.password, user.password)) {
           throw new Error(`Username or Password is invalid`)
         }
         return {
-          accessToken: jwt.sign({ id: user.id, roles: user.roles }, "supersecret", { expiresIn: '1d' }),
+          accessToken: crypto.tokenize({ id: user.id, roles: user.roles }),
           userId: user.id,
           roles: user.roles,
         }

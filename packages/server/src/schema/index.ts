@@ -7,9 +7,11 @@ import * as Query from './Query'
 import * as Tag from './Tag'
 import * as User from './User'
 import * as Token from './Token'
+import * as Email from './Email'
+import * as Password from './Password'
 
 export default NexusSchema.makeSchema({
-  types: [Query, Mutation, Post, User, Token, Tag],
+  types: [Query, Mutation, Post, User, Token, Email, Password, Tag],
   plugins: [
     nexusPrisma({ experimentalCRUD: true }),
     NexusSchema.fieldAuthorizePlugin(),

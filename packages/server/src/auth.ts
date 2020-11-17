@@ -28,6 +28,12 @@ export interface RequestWithUserContext {
   }
 }
 
+function never(fieldName: string) {
+  return () => {
+    throw new ForbiddenError(`Forbidden: Cannot query ${fieldName} field`);
+  }
+}
+
 function hasOneOfRoles(allowRoles: string[]) {
   return (_root: any, args: Record<string, any>, ctx: RequestWithUserContext) => {
     return (
@@ -68,6 +74,7 @@ function resolveFieldIfOwner(fieldName: string, allowRoles: string[]) {
 export default {
   hasOneOfRoles,
   isOwner,
+  never,
   resolveFieldIfHasOneOfRoles,
   resolveFieldIfOwner,
 }

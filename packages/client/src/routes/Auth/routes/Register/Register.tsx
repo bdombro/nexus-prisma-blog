@@ -27,12 +27,18 @@ const Component: React.FC = () => {
         return;
       }
       const res = await register(registerProps);
-      if (res.errors)
-        res.errors.forEach((error) => {
+      if (res.graphQLErrors && res.graphQLErrors.length) {
+        res.graphQLErrors.forEach((error) => {
           const field = /password/i.test(error.message) ? "password" : "email";
+          if (field === 'email' && error.message.includes('Unique constraint failed'))
+            error.message = 'Email has already been registered. Please login or reset your password.'
           setError(field, { type: "manual", message: error.message });
-        });
-      console.info("Register Success");
+        })
+      }
+      else if(res.message) {
+        setError('name', { type: "manual", message: res.message });
+      }
+      else console.info("Register Success");
     },
     [register, setError]
   );
@@ -76,7 +82,7 @@ const Component: React.FC = () => {
           labelText="Password"
           type="password"
           placeholder="********"
-          defaultValue="CoolPassword8"
+          defaultValue="CoolPassword9"
           error={errors?.password?.message}
           inputRef={registerField()}
         />

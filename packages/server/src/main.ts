@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga'
-import expressJwt from 'express-jwt';
+import { jwtMiddleware } from "./lib/crypto"
 import schema from './schema'
 import { createContext } from './context'
 
@@ -9,6 +9,6 @@ const server = new GraphQLServer({
   context: createContext,
 })
 
-server.express.use(expressJwt({ secret: "supersecret", algorithms: ['HS256'], credentialsRequired: false }));
+server.express.use(jwtMiddleware);
 
 server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
