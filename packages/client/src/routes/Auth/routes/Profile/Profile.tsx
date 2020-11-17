@@ -34,10 +34,10 @@ const Component: React.FC = () => {
 export default Component;
 
 const USER = gql`
-  query UserProfile($id: ID!) {
-    user(id: $id) {
+  query UserProfile($id: String!) {
+    user(where: { id: $id }) {
       id
-      email
+      name
       createdAt
       updatedAt
     }

@@ -9,7 +9,7 @@ const Component: React.FC = () => {
   if (loading) return <p>Loading...</p>;
   if (error) throw new Error(JSON.stringify(error, null, 2));
 
-  const posts = data || [];
+  const posts = data!.posts;
 
   return (
     <>
@@ -38,7 +38,7 @@ const POSTS = gql`
             title
             author {
                 id
-                email
+                name
             }
         }
     }

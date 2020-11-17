@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:postgres@localhost:5432/myapp"
+  url = "***"
 }
 
 generator prisma_client {
@@ -11,8 +11,9 @@ model User {
   id        String   @default(cuid()) @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String?
+  name      String
   posts     Post[]
+  rating    Float
   roles     UserRole[]
   email     String @unique
   password  String
@@ -34,8 +35,8 @@ model Post {
   tags     Tag[]
   blogId   Int?
   status   PostStatus
-  authorId String
-  author   User      @relation(fields: [authorId], references: [id])
+  authorId String?
+  author   User?      @relation(fields: [authorId], references: [id])
 }
 
 enum PostStatus {

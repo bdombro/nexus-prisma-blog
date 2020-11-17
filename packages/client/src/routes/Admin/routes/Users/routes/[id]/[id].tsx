@@ -11,12 +11,11 @@ import routeMeta from "./meta";
 const Component: React.FC = (props) => {
   const { id } = useParams();
   const { loading, error, data } = useQuery<User>(USER, { variables: { id } });
-  useMetaTags({ title: `${routeMeta.title} ${data?.user?.name} - Boilerplate` }, []);
+  const user = data?.user;
+  useMetaTags({ title: `${routeMeta.title} ${user?.name || 'Not Found'} - Boilerplate` }, [user]);
 
   if (loading) return <p>Loading...</p>;
   if (error) throw new Error(JSON.stringify(error, null, 2));
-
-  const user = data?.user;
 
   if (!user) return <NotFound {...props} />;
 
@@ -36,10 +35,10 @@ const Component: React.FC = (props) => {
 export default Component;
 
 const USER = gql`
-  query User($id: ID!) {
-    user(id: $id) {
+  query User($id: String!) {
+    user(where: { id: $id }) {
       id
-      email
+      name
       createdAt
       updatedAt
       roles

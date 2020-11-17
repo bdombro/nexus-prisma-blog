@@ -1,0 +1,23 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "User",
+      "field": "name",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Post",
+      "field": "authorId",
+      "arity": "Required"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Post",
+      "field": "author",
+      "arity": "Required"
+    }
+  ]
+}

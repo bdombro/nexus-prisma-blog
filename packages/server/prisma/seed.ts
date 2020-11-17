@@ -14,7 +14,6 @@ async function main() {
   postWithAuthor = await prisma.user.create({
     data: {
           name: 'Nancy',
-          rating: 0.5,
           email: 'admin@example.com',
           roles: ['ADMIN'],
           password: testHash,
@@ -33,7 +32,6 @@ async function main() {
   postWithAuthor = await prisma.user.create({
     data: {
       name: 'Drew',
-      rating: 0.5,
       email: 'editor@example.com',
       roles: ['EDITOR'],
       password: testHash,
@@ -52,7 +50,6 @@ async function main() {
   postWithAuthor = await prisma.user.create({
     data: {
       name: 'Pappy',
-      rating: 0.5,
       email: 'author@example.com',
       roles: ['AUTHOR'],
       password: testHash,

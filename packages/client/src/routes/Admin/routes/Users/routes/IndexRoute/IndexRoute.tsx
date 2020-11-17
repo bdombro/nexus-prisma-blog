@@ -11,7 +11,7 @@ const IndexRoute: React.FC = () => {
   if (loading) return <p>Loading...</p>;
   if (error) throw new Error(JSON.stringify(error, null, 2));
 
-  const users = data || [];
+  const users = data!.users;
 
   return (
     <>
@@ -37,7 +37,7 @@ const USERS = gql`
     query Users {
         users(first: 9999) {
             id
-            email
+            name
             createdAt
             updatedAt
             roles
