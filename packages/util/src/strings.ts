@@ -6,7 +6,7 @@
  *
  * Copied from npmjs.com/package/str_shorten and made Typescript friendly
  */
-export function stringShorten(
+export function shorten(
   str: string,
   maxChars: number,
   options?: {

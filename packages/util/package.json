@@ -1,0 +1,20 @@
+{
+  "name": "@app/util",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generic util library",
+  "license": "ISC",
+  "scripts": {
+    "build": "rm -rf dist && tsc"
+  },
+  "dependencies": {
+    "express-jwt": "^6.0.0",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/express-jwt": "^0.0.42",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/node": "*",
+    "typescript": "*"
+  }
+}

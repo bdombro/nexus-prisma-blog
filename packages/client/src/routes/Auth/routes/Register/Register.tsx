@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import CheckboxFieldset from "../../../../molecules/CheckboxFieldset";
 import TextFieldset from "../../../../molecules/TextFieldset";
 import { useAuthentication } from "../../../../state";
-import { wait } from "../../../../util/wait";
+import { wait } from "@app/util/dist/async";
 import loginMeta from "../Login/meta";
 import routeMeta from "./meta";
 

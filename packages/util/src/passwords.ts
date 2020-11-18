@@ -11,10 +11,16 @@ export const isPasswordRegex = new RegExp(
     "(?=.*[A-Z])", // one uppercase
     "(?=.*[a-z])", // one lowercase
     "(?=.*[0-9])", // one number
-    ".{8}", // min length
+    ".{8}" // min length
   ].join("")}`
 );
-
 export const isPasswordRequirements = "minimum 8 letters, one uppercase, one lowercase, and one number.";
 
-export const isPassword = (subject: string) => isPasswordRegex.test(subject);
+export function isPassword(subject: string) {
+  return isPasswordRegex.test(subject);
+}
+
+export function assertPasswordStrength(password: string) {
+  if (!isPassword(password)) throw new Error(isPasswordRequirements);
+  return password;
+}

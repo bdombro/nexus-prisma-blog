@@ -19,7 +19,6 @@
     "@prisma/client": "2.10.0",
     "apollo-server-express": "^2.19.0",
     "compression": "^1.7.4",
-    "express-jwt": "^6.0.0",
     "graphql": "^15.3.0",
     "graphql-query-complexity": "^0.7.1",
     "graphql-tools": "^4.0.7",
@@ -31,9 +30,7 @@
   "devDependencies": {
     "@prisma/cli": "2.11.0",
     "@types/compression": "^1.7.0",
-    "@types/express-jwt": "^0.0.42",
     "@types/faker": "^5.1.2",
-    "@types/jsonwebtoken": "^8.5.0",
     "@types/morgan": "^1.9.2",
     "@types/ws": "^7.2.7",
     "faker": "^5.1.0",

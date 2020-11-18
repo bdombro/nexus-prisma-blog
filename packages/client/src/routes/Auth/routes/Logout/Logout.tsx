@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthentication } from "../../../../state/authentication";
-import { wait } from "../../../../util/wait";
+import { wait } from "@app/util/dist/async";
 import LoginMeta from "../Login/meta";
 
 const Logout: Logout = () => {

@@ -6,7 +6,7 @@ import { separateOperations } from 'graphql'
 import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity'
 import morgan from "morgan"
 import sirv from "sirv"
-import { jwtMiddleware } from "./lib/crypto"
+import { jwtMiddleware } from "@app/util/src/crypto"
 import schema from './schema'
 
 const { PORT = 4000, NODE_ENV } = process.env
@@ -66,7 +66,6 @@ app.use(morgan((tokens, req, res) => {
   let body = req.body
   if (body?.variables?.password)
     body = {...body, variables: {...body.variables, password: 'redacted'}}
-
   return [
     tokens.date(req, res, 'iso'),
     tokens.method(req, res),
@@ -82,16 +81,16 @@ app.use(sirv("../client/build", { dev, etag: true, maxAge: 10*60*1000, immutable
 
 const server = app.listen({ port: PORT }, () => console.log(`🚀 Server ready at http://localhost:${PORT}`));
 
-server
-  .on("error", (e) => {
-    // @ts-ignore: ts doesn't know of code attribute
-    if (e.code === "EADDRINUSE")
-      console.log("Address in use :-(")
-    else
-      console.log("Unknown express error!")
-    server.close()
-  })
-  .on("close", () => console.log("Http server closed."))
+// server
+//   .on("error", (e) => {
+//     // @ts-ignore: ts doesn't know of code attribute
+//     if (e.code === "EADDRINUSE")
+//       console.log("Address in use :-(")
+//     else
+//       console.log("Unknown express error!")
+//     server.close()
+//   })
+//   .on("close", () => console.log("Http server closed."))
 
 
 // function handleExit(signal: string) {

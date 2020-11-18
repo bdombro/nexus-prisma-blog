@@ -1,6 +1,6 @@
 import { objectType } from "@nexus/schema";
 import { UserRole } from '@prisma/client'
-import auth from '../lib/field-authorize-plugin-helpers'
+import auth from './lib/field-authorize-plugin-helpers'
 
 
 export const User = objectType({

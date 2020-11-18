@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import TextFieldset from "../../../../molecules/TextFieldset";
 import { useAuthentication } from "../../../../state/authentication";
-import { wait } from "../../../../util/wait";
+import { wait } from "@app/util/dist/async";
 import forgotMeta from "../ForgotPassword/meta";
 import registerMeta from "../Register/meta";
 import routeMeta from "./meta";

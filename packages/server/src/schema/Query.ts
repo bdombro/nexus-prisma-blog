@@ -1,5 +1,5 @@
-import { intArg, queryType, stringArg } from '@nexus/schema'
-import * as crypto from "../lib/crypto";
+import { queryType, stringArg } from '@nexus/schema'
+import * as crypto from "@app/util/src/crypto";
 
 export const Query = queryType({
   definition(t) {

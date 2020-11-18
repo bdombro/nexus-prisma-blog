@@ -1,6 +1,6 @@
 import { scalarType } from "@nexus/schema";
 
-import { assertPasswordStrength } from "../lib/crypto";
+import { assertPasswordStrength } from "@app/util/dist/passwords";
 
 export const Password = scalarType({
   name: 'Password',

@@ -1,5 +1,5 @@
 import { inputObjectType, mutationType } from "@nexus/schema";
-import { hash } from "../lib/crypto";
+import { hash } from "@app/util/src/crypto";
 import { User } from "./User";
 
 export const Mutation = mutationType({
@@ -15,7 +15,7 @@ export const Mutation = mutationType({
       resolve: async (_root, args, ctx) => {
         const passwordHash = await hash(args.data.password)
         const res = await ctx.prisma.user.create({data: {...args.data, roles: ['AUTHOR'], password: passwordHash}})
-          .catch(e => {
+          .catch((e: Error) => {
             if (e.message.includes('Unique constraint failed on the fields'))
               throw new Error('Email is already registered')
             throw e
