@@ -14,8 +14,8 @@ export enum UserRole {
 }
 
 export interface RegisterInputType {
-  name: string;
   email: any;
+  name: string;
   password: any;
 }
 

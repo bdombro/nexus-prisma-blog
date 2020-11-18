@@ -1,4 +1,10 @@
-import * as NexusSchema from '@nexus/schema'
+import {
+  // connectionPlugin,
+  fieldAuthorizePlugin,
+  makeSchema,
+  nullabilityGuardPlugin,
+  queryComplexityPlugin,
+} from '@nexus/schema'
 import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
 import * as Mutation from './Mutation'
@@ -10,29 +16,44 @@ import * as Token from './Token'
 import * as Email from './Email'
 import * as Password from './Password'
 
-export default NexusSchema.makeSchema({
+const DEBUGGING_CURSOR = false
+let fn = DEBUGGING_CURSOR ? (i: string) => i : undefined
+
+export default makeSchema({
   types: [Query, Mutation, Post, User, Token, Email, Password, Tag],
-  plugins: [
-    nexusPrisma({ experimentalCRUD: true }),
-    NexusSchema.fieldAuthorizePlugin(),
-  ],
   outputs: {
+    // typegen: path.join(__dirname, '../typegen.gen.ts'),
     typegen: path.join(
       __dirname,
       '../../node_modules/@types/nexus-typegen/index.d.ts',
     ),
+    schema: path.join(__dirname, '../../schema.graphql'),
   },
-  typegenAutoConfig: {
-    contextType: 'Context.Context',
-    sources: [
-      {
-        source: '.prisma/client',
-        alias: 'prisma',
+  plugins: [
+    nexusPrisma({ experimentalCRUD: true }),
+    // connectionPlugin({
+    //   encodeCursor: fn,
+    //   decodeCursor: fn,
+    // }),
+    queryComplexityPlugin(),
+    fieldAuthorizePlugin(),
+    nullabilityGuardPlugin({
+      shouldGuard: true,
+      fallbackValues: {
+        Int: () => -1,
+        DateTime: () => new Date(0),
+        Boolean: () => false,
+        String: () => '',
+        Email: () => '',
+        Password: () => '',
       },
-      {
-        source: require.resolve('../context'),
-        alias: 'Context',
-      },
-    ],
-  },
+    }),
+  ],
+  // prettierConfig: require.resolve('../../../.prettierrc'),
+  // features: {
+  //   abstractTypeStrategies: {
+  //     __typename: true,
+  //     resolveType: true,
+  //   },
+  // },
 })

@@ -18,7 +18,7 @@
  *
  */
 import { UserRole } from '@prisma/client'
-import { ForbiddenError } from 'apollo-server-errors'
+import { ForbiddenError } from 'apollo-server-express'
 import * as r from 'rambdax'
 
 export interface RequestWithUserContext {

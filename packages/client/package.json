@@ -7,8 +7,6 @@
     "dev": "BROWSER=false react-app-rewired start",
     "build": "react-app-rewired build",
     "codegen": "rimraf */**/__generated__ && apollo client:codegen --target=typescript --globalTypesFile=src/__generated__/globalTypes.ts",
-    "serve": "serve -s build -l 3000",
-    "prod": "npm run build && npm run serve",
     "analyze": "ANALYZE=1 npm run build",
     "test": "react-app-rewired test",
     "e2e": "cd e2e && jest",
@@ -84,7 +82,6 @@
     "puppeteer": "^5.3.1",
     "react-app-rewired": "^2.1.6",
     "react-scripts": "^3.4.2",
-    "serve": "^11.3.2",
     "ts-node-dev": "^1.0.0-pre.56",
     "typescript": "^3.9.7",
     "webpack-bundle-analyzer": "^3.8.0"

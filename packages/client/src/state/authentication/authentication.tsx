@@ -48,7 +48,7 @@ export const AuthenticationProvider: React.FC = ({ children }) => {
         .catch(e => e)
       return res;
     },
-    [apolloClient, login]
+    [apolloClient, login, setState]
   );
 
   // const refresh = React.useCallback(async () => {
