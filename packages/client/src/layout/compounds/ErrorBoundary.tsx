@@ -19,7 +19,7 @@ export class ErrorBoundary extends React.Component<{ showBack?: boolean }> {
   }
 
   componentDidCatch(error: any) {
-    // Log the error to an error reporting service
+    // TODO: Send error to server
     this.setState({ error });
   }
 

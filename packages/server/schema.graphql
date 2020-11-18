@@ -22,6 +22,9 @@ input DateTimeFilter {
 """The Email scalar type asserts email validity"""
 scalar Email
 
+"""The Empty scalar has no fields"""
+scalar Empty
+
 input EnumPostStatusFieldUpdateOperationsInput {
   set: PostStatus
 }
@@ -66,6 +69,7 @@ type Mutation {
   deleteOnePost(where: PostWhereUniqueInput!): Post
   deleteOneTag(where: TagWhereUniqueInput!): Tag
   deleteOneUser(where: UserWhereUniqueInput!): User
+  errorLog(message: String!): Empty
   register(data: RegisterInputType!): User
   updateOnePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateOneTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag

@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 import compression from "compression";
 import express from "express";
+import fs from "fs";
+import path from "path";
 import { separateOperations } from "graphql";
 import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from "graphql-query-complexity";
 import morgan from "morgan";
@@ -59,28 +61,61 @@ const apolloServer = new ApolloServer({
   ]
 });
 
+const errorLogMiddleware = morgan(
+  (tokens, req, res) => {
+    // @ts-ignore: req is unknown by morgan
+    let body = req.body;
+    if (body?.variables?.password)
+      body = { ...body, variables: { ...body.variables, password: "redacted" } };
+    const message = JSON.stringify({
+      time: tokens.date(req, res, "iso"),
+      // @ts-ignore: req is unknown by morgan
+      ip: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip,
+      status: parseInt(tokens.status(req, res) || "-1", 10),
+      // @ts-ignore: req is unknown by morgan
+      userId: req.user?.id,
+      operationName: body?.operationName,
+      body,
+    });
+    return message;
+  },
+  {
+    // skip: (req, res) => res.statusCode < 400,
+    // stream: fs.createWriteStream(path.join(__dirname, '../../../error.log'), { flags: 'a' }),
+  }
+);
+
+const accessLogMiddleware = morgan(
+  (tokens, req, res) => {
+    const message = [
+      tokens.date(req, res, "iso"),
+      tokens.method(req, res),
+      tokens.url(req, res),
+      // @ts-ignore: req is unknown by morgan
+      req.body?.operationName,
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      tokens["response-time"](req, res),
+      // @ts-ignore: req is unknown by morgan
+      req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip,
+      // @ts-ignore: req is unknown by morgan
+      req.user?.id,
+    ].join(' ');
+    return message;
+  },
+  {
+    skip: () => dev,
+  }
+)
+
 
 const app = express();
 app.use(jwtMiddleware);
 app.use(compression());
-app.use(morgan((tokens, req, res) => {
-  let body = req.body;
-  if (body?.variables?.password)
-    body = { ...body, variables: { ...body.variables, password: "redacted" } };
-  const message = csv.stringifySingle([
-    tokens.date(req, res, "iso"),
-    tokens.method(req, res),
-    tokens.url(req, res),
-    parseInt(tokens.status(req, res) || '-1', 10),
-    parseInt(tokens.res(req, res, "content-length") || '-1', 10),
-    parseInt(tokens["response-time"](req, res) || '-1', 10),
-    req.user?.id,
-    body?.operationName,
-    JSON.stringify(body?.variables),
-    body?.query,
-  ]);
-  return message
-}));
+app.use(morgan( 'dev', { skip: () => !dev}))
+app.use(accessLogMiddleware);
+app.use(errorLogMiddleware);
+
 apolloServer.applyMiddleware({ app });
 app.use(sirv("../client/build", { dev, etag: true, maxAge: 10 * 60 * 1000, immutable: true, single: true }));
 

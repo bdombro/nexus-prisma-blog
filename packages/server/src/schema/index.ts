@@ -10,6 +10,7 @@ import * as path from 'path'
 import * as Mutation from './Mutation'
 import * as Post from './Post'
 import * as Query from './Query'
+import * as Empty from './Empty'
 import * as Tag from './Tag'
 import * as User from './User'
 import * as Token from './Token'
@@ -20,7 +21,7 @@ const DEBUGGING_CURSOR = false
 let fn = DEBUGGING_CURSOR ? (i: string) => i : undefined
 
 export default makeSchema({
-  types: [Query, Mutation, Post, User, Token, Email, Password, Tag],
+  types: [Query, Mutation, Empty, Post, User, Token, Email, Password, Tag],
   outputs: {
     // typegen: path.join(__dirname, '../typegen.gen.ts'),
     typegen: path.join(
@@ -46,6 +47,7 @@ export default makeSchema({
         String: () => '',
         Email: () => '',
         Password: () => '',
+        Empty: () => null,
       },
     }),
   ],
