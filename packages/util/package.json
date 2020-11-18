@@ -5,11 +5,14 @@
   "description": "Generic util library",
   "license": "ISC",
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch"
   },
   "dependencies": {
+    "@types/papaparse": "^5.2.4",
     "express-jwt": "^6.0.0",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "papaparse": "^5.3.0"
   },
   "devDependencies": {
     "@types/express-jwt": "^0.0.42",

@@ -27,7 +27,7 @@ export class KeyValueStore {
   constructor(config: Partial<KeyValueStoreConfig>) {
     this.config = { ...this.config, ...config };
     this.getStore().then(() => {
-      if (this.config.maxAge > 0) setInterval(this.clearExpired, 60000);
+      if (this.config.maxAge > 0) setInterval(this.clearExpired.bind(this), 60000);
     });
   }
 

@@ -1,24 +1,25 @@
-import { PrismaClient } from "@prisma/client"
-import { ApolloServer } from 'apollo-server-express'
-import compression from "compression"
-import express from "express"
-import { separateOperations } from 'graphql'
-import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity'
-import morgan from "morgan"
-import sirv from "sirv"
-import { jwtMiddleware } from "@app/util/src/crypto"
-import schema from './schema'
+import { jwtMiddleware } from "@app/util/src/crypto";
+import * as csv from "@app/util/src/csv";
+import { PrismaClient } from "@prisma/client";
+import { ApolloServer } from "apollo-server-express";
+import compression from "compression";
+import express from "express";
+import { separateOperations } from "graphql";
+import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from "graphql-query-complexity";
+import morgan from "morgan";
+import sirv from "sirv";
+import schema from "./schema";
 
-const { PORT = 4000, NODE_ENV } = process.env
-const dev = NODE_ENV === "development"
+const { PORT = 4000, NODE_ENV } = process.env;
+const dev = NODE_ENV === "development";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const apolloServer = new ApolloServer({
   schema,
   context: (ctx) => {
-    const user = ctx.req.user ?? { id: "", roles: [] }
-    return { ...ctx, prisma, user }
+    const user = ctx.req.user ?? { id: "", roles: [] };
+    return { ...ctx, prisma, user };
   },
   plugins: [
     {
@@ -40,44 +41,48 @@ const apolloServer = new ApolloServer({
               // Add more estimators here...
               // This will assign each field a complexity of 1
               // if no other estimator returned a value.
-              simpleEstimator({ defaultComplexity: 1 }),
-            ],
-          })
+              simpleEstimator({ defaultComplexity: 1 })
+            ]
+          });
           // Here we can react to the calculated complexity,
           // like compare it with max and throw error when the threshold is reached.
           if (complexity >= 100) {
             throw new Error(
               `Sorry, too complicated query! ${complexity} is over 100 that is the max allowed complexity.`
-            )
+            );
           }
           // And here we can e.g. subtract the complexity point from hourly API calls limit.
           // console.log('Used query complexity points:', complexity)
-        },
-      }),
-    },
-  ],
-})
+        }
+      })
+    }
+  ]
+});
 
 
 const app = express();
 app.use(jwtMiddleware);
-app.use(compression())
+app.use(compression());
 app.use(morgan((tokens, req, res) => {
-  let body = req.body
+  let body = req.body;
   if (body?.variables?.password)
-    body = {...body, variables: {...body.variables, password: 'redacted'}}
-  return [
-    tokens.date(req, res, 'iso'),
+    body = { ...body, variables: { ...body.variables, password: "redacted" } };
+  const message = csv.stringifySingle([
+    tokens.date(req, res, "iso"),
     tokens.method(req, res),
     tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length')+'b',
-    tokens['response-time'](req, res)+'ms',
-    JSON.stringify(body),
-  ].join(' ')
-}))
+    parseInt(tokens.status(req, res) || '-1', 10),
+    parseInt(tokens.res(req, res, "content-length") || '-1', 10),
+    parseInt(tokens["response-time"](req, res) || '-1', 10),
+    req.user?.id,
+    body?.operationName,
+    JSON.stringify(body?.variables),
+    body?.query,
+  ]);
+  return message
+}));
 apolloServer.applyMiddleware({ app });
-app.use(sirv("../client/build", { dev, etag: true, maxAge: 10*60*1000, immutable: true, single: true }))
+app.use(sirv("../client/build", { dev, etag: true, maxAge: 10 * 60 * 1000, immutable: true, single: true }));
 
 const server = app.listen({ port: PORT }, () => console.log(`🚀 Server ready at http://localhost:${PORT}`));
 
