@@ -61,29 +61,6 @@ const apolloServer = new ApolloServer({
   ]
 });
 
-const errorLogMiddleware = morgan(
-  (tokens, req, res) => {
-    // @ts-ignore: req is unknown by morgan
-    let body = req.body;
-    if (body?.variables?.password)
-      body = { ...body, variables: { ...body.variables, password: "redacted" } };
-    const message = JSON.stringify({
-      time: tokens.date(req, res, "iso"),
-      // @ts-ignore: req is unknown by morgan
-      ip: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip,
-      status: parseInt(tokens.status(req, res) || "-1", 10),
-      // @ts-ignore: req is unknown by morgan
-      userId: req.user?.id,
-      operationName: body?.operationName,
-      body,
-    });
-    return message;
-  },
-  {
-    skip: (req, res) => res.statusCode < 400,
-    // stream: fs.createWriteStream(path.join(__dirname, '../../../error.log'), { flags: 'a' }),
-  }
-);
 
 const accessLogMiddleware = morgan(
   (tokens, req, res) => {
@@ -107,6 +84,37 @@ const accessLogMiddleware = morgan(
     skip: () => dev,
   }
 )
+
+const errorLogMiddleware = morgan(
+  (tokens, req, res) => {
+    // @ts-ignore: req.body is unknown by morgan
+    let reqBody = {...req.body};
+    if (reqBody?.variables?.password)
+      reqBody = { ...reqBody, variables: { ...reqBody.variables, password: "redacted" } };
+    let message: any = {
+      // @ts-ignore: req is unknown by morgan
+      ip: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.ip,
+      code: tokens.status(req, res),
+      // @ts-ignore: req is unknown by morgan
+      ...req.user?.id && {createdBy: { connect: { id: req.user?.id } }},
+      message: "Unknown Server Error",
+      userAgent: req.headers['user-agent'],
+      reqBody,
+    }
+    prisma.errorLog.create({ data: message }).catch(e => {
+      console.error("Prisma error capture error!")
+      console.dir(e)
+      console.dir(message)
+      throw e
+    })
+    message = { time: tokens.date(req, res, "iso"), ...message, createdBy: message?.createdBy?.connect?.id }
+    return JSON.stringify(message);
+  },
+  {
+    skip: (req, res) => res.statusCode < 500,
+    stream: fs.createWriteStream(path.join(__dirname, '../../../error.log'), { flags: 'a' }),
+  }
+);
 
 
 const app = express();

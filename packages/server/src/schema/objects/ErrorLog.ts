@@ -1,6 +1,4 @@
-import { objectType } from "@nexus/schema";
-import { RequestWithUserContext } from "../lib/field-authorize-plugin-helpers";
-
+import { extendType, objectType } from "@nexus/schema";
 
 export const ErrorLog = objectType({
   name: 'ErrorLog',
@@ -15,4 +13,26 @@ export const ErrorLog = objectType({
     t.model.reqBody()
     t.model.resBody()
   },
+})
+
+export const Queries = extendType({
+  type: "Query",
+  definition(t) {
+    t.crud.errorLog()
+    t.crud.errorLogs({ filtering: true, ordering: true, pagination: true })
+  }
+})
+
+export const ErrorLogMutations = extendType({
+  type: "Mutation",
+  definition(t) {
+    t.crud.createOneErrorLog({
+      computedInputs:  {
+        createdBy: ({ ctx }) => ({
+          connect: {id: ctx.user.id}
+        })
+      }
+    })
+    t.crud.updateOneErrorLog()
+  }
 })
