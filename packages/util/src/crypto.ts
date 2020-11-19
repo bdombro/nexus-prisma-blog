@@ -1,23 +1,21 @@
 import crypto from "crypto";
 import expressJwt from "express-jwt";
 import jwt from "jsonwebtoken";
-import { assertPasswordStrength } from "./passwords";
 
 const salt = '551ae75784b425427b561e4acfebd82b' //crypto.randomBytes(16).toString("hex")
 const secret = 'shhhhhhared-secret'
 
-export async function hash(password: string): Promise<string> {
-  assertPasswordStrength(password);
+export async function hash(str: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    crypto.scrypt(password, salt, 64, (err, derivedKey) => {
+    crypto.scrypt(str, salt, 64, (err, derivedKey) => {
       if (err) reject(err)
       resolve(derivedKey.toString("hex"))
     })
   })
 }
 
-export async function verify(password: string, hashToCheck: string): Promise<boolean> {
-  const hashExpected = await hash(password);
+export async function verify(str: string, hashToCheck: string): Promise<boolean> {
+  const hashExpected = await hash(str);
   return hashToCheck === hashExpected
 }
 

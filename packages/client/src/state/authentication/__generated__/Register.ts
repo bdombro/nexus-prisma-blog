@@ -9,13 +9,13 @@ import { RegisterInputType } from "./../../../__generated__/globalTypes";
 // GraphQL mutation operation: Register
 // ====================================================
 
-export interface Register_register {
+export interface Register_createOneUser {
   __typename: "User";
   id: string;
 }
 
 export interface Register {
-  register: Register_register | null;
+  createOneUser: Register_createOneUser | null;
 }
 
 export interface RegisterVariables {

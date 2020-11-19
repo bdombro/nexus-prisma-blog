@@ -40,6 +40,141 @@ input EnumUserRoleNullableListFilter {
   equals: [UserRole!]
 }
 
+type ErrorLog {
+  createdAt: DateTime!
+  createdBy: User
+  createdById: String
+  id: String!
+  message: String!
+  reqBody: Json
+  resBody: Json
+  stack: String
+  updatedAt: DateTime!
+}
+
+input ErrorLogCreateInput {
+  createdAt: DateTime
+  id: String
+  message: String!
+  reqBody: Json
+  resBody: Json
+  stack: String
+  updatedAt: DateTime
+}
+
+input ErrorLogCreateManyWithoutCreatedByInput {
+  connect: [ErrorLogWhereUniqueInput!]
+  create: [ErrorLogCreateWithoutCreatedByInput!]
+}
+
+input ErrorLogCreateWithoutCreatedByInput {
+  createdAt: DateTime
+  id: String
+  message: String!
+  reqBody: Json
+  resBody: Json
+  stack: String
+  updatedAt: DateTime
+}
+
+input ErrorLogListRelationFilter {
+  every: ErrorLogWhereInput
+  none: ErrorLogWhereInput
+  some: ErrorLogWhereInput
+}
+
+input ErrorLogOrderByInput {
+  createdAt: SortOrder
+  createdById: SortOrder
+  id: SortOrder
+  message: SortOrder
+  reqBody: SortOrder
+  resBody: SortOrder
+  stack: SortOrder
+  updatedAt: SortOrder
+}
+
+input ErrorLogScalarWhereInput {
+  AND: [ErrorLogScalarWhereInput!]
+  createdAt: DateTimeFilter
+  createdById: StringNullableFilter
+  id: StringFilter
+  message: StringFilter
+  NOT: [ErrorLogScalarWhereInput!]
+  OR: [ErrorLogScalarWhereInput!]
+  reqBody: JsonNullableFilter
+  resBody: JsonNullableFilter
+  stack: StringNullableFilter
+  updatedAt: DateTimeFilter
+}
+
+input ErrorLogUpdateManyDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  message: StringFieldUpdateOperationsInput
+  reqBody: Json
+  resBody: Json
+  stack: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ErrorLogUpdateManyWithoutCreatedByInput {
+  connect: [ErrorLogWhereUniqueInput!]
+  create: [ErrorLogCreateWithoutCreatedByInput!]
+  delete: [ErrorLogWhereUniqueInput!]
+  deleteMany: [ErrorLogScalarWhereInput!]
+  disconnect: [ErrorLogWhereUniqueInput!]
+  set: [ErrorLogWhereUniqueInput!]
+  update: [ErrorLogUpdateWithWhereUniqueWithoutCreatedByInput!]
+  updateMany: [ErrorLogUpdateManyWithWhereNestedInput!]
+  upsert: [ErrorLogUpsertWithWhereUniqueWithoutCreatedByInput!]
+}
+
+input ErrorLogUpdateManyWithWhereNestedInput {
+  data: ErrorLogUpdateManyDataInput!
+  where: ErrorLogScalarWhereInput!
+}
+
+input ErrorLogUpdateWithoutCreatedByDataInput {
+  createdAt: DateTimeFieldUpdateOperationsInput
+  id: StringFieldUpdateOperationsInput
+  message: StringFieldUpdateOperationsInput
+  reqBody: Json
+  resBody: Json
+  stack: NullableStringFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+}
+
+input ErrorLogUpdateWithWhereUniqueWithoutCreatedByInput {
+  data: ErrorLogUpdateWithoutCreatedByDataInput!
+  where: ErrorLogWhereUniqueInput!
+}
+
+input ErrorLogUpsertWithWhereUniqueWithoutCreatedByInput {
+  create: ErrorLogCreateWithoutCreatedByInput!
+  update: ErrorLogUpdateWithoutCreatedByDataInput!
+  where: ErrorLogWhereUniqueInput!
+}
+
+input ErrorLogWhereInput {
+  AND: [ErrorLogWhereInput!]
+  createdAt: DateTimeFilter
+  createdBy: UserWhereInput
+  createdById: StringNullableFilter
+  id: StringFilter
+  message: StringFilter
+  NOT: [ErrorLogWhereInput!]
+  OR: [ErrorLogWhereInput!]
+  reqBody: JsonNullableFilter
+  resBody: JsonNullableFilter
+  stack: StringNullableFilter
+  updatedAt: DateTimeFilter
+}
+
+input ErrorLogWhereUniqueInput {
+  id: String
+}
+
 input IntFilter {
   equals: Int
   gt: Int
@@ -62,15 +197,21 @@ input IntNullableFilter {
   notIn: [Int!]
 }
 
+scalar Json
+
+input JsonNullableFilter {
+  equals: Json
+  not: Json
+}
+
 type Mutation {
+  createOneErrorLog(data: ErrorLogCreateInput!): ErrorLog!
   createOnePost(data: PostCreateInput!): Post!
   createOneTag(data: TagCreateInput!): Tag!
-  createOneUser(data: UserCreateInput!): User!
+  createOneUser(data: RegisterInputType!): User
   deleteOnePost(where: PostWhereUniqueInput!): Post
   deleteOneTag(where: TagWhereUniqueInput!): Tag
   deleteOneUser(where: UserWhereUniqueInput!): User
-  errorLog(message: String!): Empty
-  register(data: RegisterInputType!): User
   updateOnePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateOneTag(data: TagUpdateInput!, where: TagWhereUniqueInput!): Tag
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
@@ -179,11 +320,6 @@ input PostCreateInput {
   tags: TagCreateManyWithoutPostInput
   title: String!
   updatedAt: DateTime
-}
-
-input PostCreateManyWithoutAuthorInput {
-  connect: [PostWhereUniqueInput!]
-  create: [PostCreateWithoutAuthorInput!]
 }
 
 input PostCreateOneWithoutTagsInput {
@@ -347,6 +483,8 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  errorLog(where: ErrorLogWhereUniqueInput!): ErrorLog
+  errorLogs(after: ErrorLogWhereUniqueInput, before: ErrorLogWhereUniqueInput, first: Int, last: Int, orderBy: [ErrorLogOrderByInput!], where: ErrorLogWhereInput): [ErrorLog!]!
   post(where: PostWhereUniqueInput!): Post
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
   tag(where: TagWhereUniqueInput!): Tag
@@ -534,17 +672,6 @@ type User {
   updatedAt: DateTime!
 }
 
-input UserCreateInput {
-  createdAt: DateTime
-  email: String!
-  id: String
-  name: String
-  password: String
-  posts: PostCreateManyWithoutAuthorInput
-  roles: UserCreaterolesInput
-  updatedAt: DateTime
-}
-
 input UserCreateOneWithoutPostsInput {
   connect: UserWhereUniqueInput
   create: UserCreateWithoutPostsInput
@@ -557,6 +684,7 @@ input UserCreaterolesInput {
 input UserCreateWithoutPostsInput {
   createdAt: DateTime
   email: String!
+  ErrorLog: ErrorLogCreateManyWithoutCreatedByInput
   id: String
   name: String
   password: String
@@ -583,6 +711,7 @@ enum UserRole {
 input UserUpdateInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
+  ErrorLog: ErrorLogUpdateManyWithoutCreatedByInput
   id: StringFieldUpdateOperationsInput
   name: NullableStringFieldUpdateOperationsInput
   password: NullableStringFieldUpdateOperationsInput
@@ -605,6 +734,7 @@ input UserUpdaterolesInput {
 input UserUpdateWithoutPostsDataInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   email: StringFieldUpdateOperationsInput
+  ErrorLog: ErrorLogUpdateManyWithoutCreatedByInput
   id: StringFieldUpdateOperationsInput
   name: NullableStringFieldUpdateOperationsInput
   password: NullableStringFieldUpdateOperationsInput
@@ -621,6 +751,7 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   createdAt: DateTimeFilter
   email: StringFilter
+  ErrorLog: ErrorLogListRelationFilter
   id: StringFilter
   name: StringNullableFilter
   NOT: [UserWhereInput!]

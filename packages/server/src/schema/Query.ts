@@ -7,10 +7,13 @@ export const Query = queryType({
     t.crud.users({ filtering: true, ordering: true, pagination: true })
 
     t.crud.post()
-    t.crud.posts({ filtering: true, ordering: true })
+    t.crud.posts({ filtering: true, ordering: true, pagination: true })
 
     t.crud.tag()
-    t.crud.tags({ filtering: true, ordering: true })
+    t.crud.tags({ filtering: true, ordering: true, pagination: true })
+
+    t.crud.errorLog()
+    t.crud.errorLogs({ filtering: true, ordering: true, pagination: true })
 
 
     t.field('token', {

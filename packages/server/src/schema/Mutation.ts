@@ -1,59 +1,34 @@
-import { inputObjectType, mutationType, stringArg } from "@nexus/schema";
 import { hash } from "@app/util/src/crypto";
-import { ValidationError } from 'apollo-server-express'
-import fs from "fs";
-import path from "path";
-import { User } from "./User";
+import { inputObjectType, mutationType } from "@nexus/schema";
+import { ValidationError } from "apollo-server-express"
+import { User } from "./objects/User";
 
 export const Mutation = mutationType({
   definition(t) {
-    t.crud.createOneUser()
-    t.crud.updateOneUser()
-    t.crud.deleteOneUser()
-    t.field('register', {
+    // t.crud.createOneUser()
+    t.field('createOneUser', {
       type: 'User',
-      args: {
-        data: RegisterInputType.asArg({required: true})
-      },
+      args: { data: RegisterInputType.asArg({required: true}) },
       resolve: async (_root, args, ctx) => {
-        const passwordHash = await hash(args.data.password)
+        const passwordHash = await hash(args.data.password!)
         const res = await ctx.prisma.user.create({data: {...args.data, roles: ['AUTHOR'], password: passwordHash}})
           .catch((e: Error) => {
             if (e.message.includes('Unique constraint failed on the fields'))
-              throw new Error('Email is already registered')
+              throw new ValidationError('Email is already registered')
             throw e
           })
         return res
       },
     })
+    t.crud.updateOneUser()
+    t.crud.deleteOneUser()
 
-    t.field('errorLog', {
-      type: 'Empty',
-      args: {
-        message: stringArg({ required: true })
-      },
-      resolve: async (_root, args, ctx) => {
-        let messageParsed;
-        try {
-          messageParsed = JSON.parse(args.message);
-        } catch (e) {
-          throw new ValidationError("Message is not JSON")
-        }
-        const message = {
-          time: (new Date()).toISOString(),
-          ip: ctx.req.headers['x-forwarded-for'] || ctx.req.headers['x-real-ip'] || ctx.req.ip,
-          userId: ctx.req.user?.id,
-          operationName: messageParsed?.operationName,
-          body: messageParsed,
-        }
-        // if (!ctx.user.id) {
-        //   throw new ForbiddenError(`Forbidden: Cannot post logs`);
-        // }
-        fs.appendFile(path.join(__dirname, '../../../../error.log'), JSON.stringify(message) + "\n", err => {
-          if (err) throw err
+    t.crud.createOneErrorLog({
+      computedInputs:  {
+        createdBy: ({ ctx }) => ({
+          connect: {id: ctx.user.id}
         })
-        return true
-      },
+      }
     })
 
     t.crud.createOnePost()

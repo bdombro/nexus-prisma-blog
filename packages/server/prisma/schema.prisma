@@ -26,6 +26,18 @@ enum UserRole {
   AUTHOR
 }
 
+model ErrorLog {
+  id            String   @default(cuid()) @id
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdById   String?
+  createdBy     User?    @relation(fields: [createdById], references: [id])
+  message       String
+  stack         String?
+  reqBody       Json?
+  resBody       Json?
+}
+
 model Post {
   id       String     @default(cuid()) @id
   createdAt DateTime @default(now())

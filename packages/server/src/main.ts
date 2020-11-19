@@ -80,7 +80,7 @@ const errorLogMiddleware = morgan(
     return message;
   },
   {
-    // skip: (req, res) => res.statusCode < 400,
+    skip: (req, res) => res.statusCode < 400,
     // stream: fs.createWriteStream(path.join(__dirname, '../../../error.log'), { flags: 'a' }),
   }
 );

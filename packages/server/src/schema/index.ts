@@ -7,21 +7,26 @@ import {
 } from '@nexus/schema'
 import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
-import * as Mutation from './Mutation'
-import * as Post from './Post'
 import * as Query from './Query'
-import * as Empty from './Empty'
-import * as Tag from './Tag'
-import * as User from './User'
-import * as Token from './Token'
-import * as Email from './Email'
-import * as Password from './Password'
+import * as Mutation from './Mutation'
+import * as User from './objects/User'
+import * as ErrorLog from './objects/ErrorLog'
+import * as Post from './objects/Post'
+import * as Empty from './scalars/Empty'
+import * as Token from './objects/Token'
+import * as Email from './scalars/Email'
+import * as Tag from './objects/Tag'
+import * as Password from './scalars/Password'
 
-const DEBUGGING_CURSOR = false
-let fn = DEBUGGING_CURSOR ? (i: string) => i : undefined
+// const DEBUGGING_CURSOR = false
+// let fn = DEBUGGING_CURSOR ? (i: string) => i : undefined
 
 export default makeSchema({
-  types: [Query, Mutation, Empty, Post, User, Token, Email, Password, Tag],
+  types: [
+    Query, Mutation,
+    User, ErrorLog, Post, Tag,
+    Empty, Token, Email, Password
+  ],
   outputs: {
     // typegen: path.join(__dirname, '../typegen.gen.ts'),
     typegen: path.join(
@@ -48,6 +53,7 @@ export default makeSchema({
         Email: () => '',
         Password: () => '',
         Empty: () => null,
+        Json: () => '',
       },
     }),
   ],

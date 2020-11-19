@@ -83,7 +83,7 @@ const TOKEN = gql`
 
 const REGISTER = gql`
   mutation Register($data: RegisterInputType!) {
-    register(data: $data) {
+    createOneUser(data: $data) {
       id
     }
   }
